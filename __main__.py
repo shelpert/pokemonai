@@ -30,7 +30,7 @@ def on_key_event(event):
 
 keyboard.hook(on_key_event)
 
-pyboy = PyBoy('Pokemon - Red Version (USA, Europe).gb', sound=True)
+pyboy = PyBoy('Pokemon - Red Version (USA, Europe).gb', sound=False)
 pyboy.set_emulation_speed(1)
 
 scan = mem_scanner.mem_scanner(pyboy.memory[0x0000:0xFFFF])
