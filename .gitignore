@@ -1,0 +1,5 @@
+Pokemon - Red Version (USA, Europe).gb.ram
+state_file_*.state
+.vscode/launch.json
+__pycache__/
+.DS_Store
