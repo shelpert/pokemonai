@@ -54,6 +54,9 @@ pkmn4_mhp = 0xD211
 pkmn5_mhp = 0xD23D
 pkmn6_mhp = 0xD269
 
+critical = 0xD05E
+
+
 # Any missing values can be found here: 
 # https://bulbapedia.bulbagarden.net/wiki/Pok%C3%A9mon_data_structure_(Generation_I)
-
+# https://datacrystal.tcrf.net/wiki/Pok%C3%A9mon_Red_and_Blue/RAM_map#Opponent_Trainer%E2%80%99s_Pok%C3%A9mon
