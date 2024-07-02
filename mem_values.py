@@ -25,6 +25,12 @@ pkmn3_status = 0xD1E5
 pkmn4_status = 0xD211
 pkmn5_status = 0xD23D
 pkmn6_status = 0xD269
+# Asleep (bits 0-2), poisoned (bit 3), burned (bit 4), frozen (bit 5), 
+# paralyzed (bit 6) (counting from 0 because we're programmers here)
+
+pkmn_confused = 0xD062 # bit 7 
+pkmn_leech_seeded = 0xD063 # bit 7
+pkmn_badly_poisoned = 0x06D4 # bit 0 
 
 pkmn1_type1 = 0xD18E
 pkmn2_type1 = 0xD1BA
@@ -53,6 +59,14 @@ pkmn3_mhp = 0xD1E5
 pkmn4_mhp = 0xD211
 pkmn5_mhp = 0xD23D
 pkmn6_mhp = 0xD269
+
+
+
+
+
+e_pkmn_confused = 0xD067 # bit 7
+e_pkmn_leech_seeded = 0xD068 # bit 7
+e_pkmn_badly_poisoned = 0x06D9 # bit 0
 
 critical = 0xD05E
 

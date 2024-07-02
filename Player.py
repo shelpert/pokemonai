@@ -26,48 +26,35 @@ class Player:
         self.pyboy.tick()
         self.pyboy.tick()
 
-
     def press_b(self):
         self.pyboy.button('s')
         self.pyboy.tick()
         self.pyboy.tick()
-
-
 
     def press_start(self):
         self.pyboy.button("start")
         self.pyboy.tick()
         self.pyboy.tick()
 
-
-
     def press_select(self):
         self.pyboy.button("select")
         self.pyboy.tick()
         self.pyboy.tick()
-
-
 
     def press_left(self):
         self.pyboy.button("left")
         self.pyboy.tick()
         self.pyboy.tick()
 
-
-
     def press_right(self):
         self.pyboy.button("right")
         self.pyboy.tick()
         self.pyboy.tick()
 
-
-
     def press_up(self):
         self.pyboy.button("up")
         self.pyboy.tick()
         self.pyboy.tick()
-
-
 
     def press_down(self):
         self.pyboy.button("down")

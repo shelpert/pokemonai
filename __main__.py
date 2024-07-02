@@ -45,8 +45,6 @@ while pyboy.tick():
         pyboy.button('a')
         pyboy.tick()
         
-        # time.sleep(0.2)
-        # player.press_a()
     
 
 pyboy.stop()
