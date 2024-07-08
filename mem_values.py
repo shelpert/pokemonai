@@ -61,7 +61,8 @@ pkmn5_mhp = 0xD23D
 pkmn6_mhp = 0xD269
 
 
-
+e_pkmn1_hp = 0xD8A5 #2 bytes
+e_pkmn2_hp = 0xD8D1 #2 bytes
 
 
 e_pkmn_confused = 0xD067 # bit 7
