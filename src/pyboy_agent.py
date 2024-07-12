@@ -15,7 +15,7 @@ class Inp(StrEnum):
     DOWN = auto()
 
 
-class PyBoyRunner:
+class PyBoyAgent:
     """
     Wrapper for pyboy.PyBoy for running Pokemon Red.
 
