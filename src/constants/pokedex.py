@@ -5,10 +5,10 @@ To access by name, use Class.THING
 To access by id (found in memory), use Class(thing_id)
 """
 
-from enum import Enum
+from enum import IntEnum
 
 
-class Move(Enum):
+class Move(IntEnum):
     """Index of pokemon moves."""
 
     NONE = 0  # Empty move
@@ -20,7 +20,7 @@ class Move(Enum):
     SCREECH = 103
 
 
-class Pokemon(Enum):
+class Pokemon(IntEnum):
     """Index of pokemon species."""
 
     NONE = 0  # No pokemon in this slot
