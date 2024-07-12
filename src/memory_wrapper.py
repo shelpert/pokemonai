@@ -69,6 +69,10 @@ class MemoryViewWrapper:
             for addr in (0xD8A4, 0xD8D0, 0xD8FC, 0xD928, 0xD954, 0xD980)
         ]
 
+    def __getitem__(self, index):
+        # Allow accessing memory directly
+        return self.view.__getitem__(index)
+
     # In-battle statuses (includes confused, seeded, etc.)
     player_status = AddrGetter(0xD062, width=3)
     enemy_status = AddrGetter(0xD067, width=3,)
