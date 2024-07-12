@@ -1,5 +1,18 @@
+from typing import Iterable
 from memory_wrapper import MemoryViewWrapper
+from enum import StrEnum, auto
 from pyboy import PyBoy
+
+
+class Inp(StrEnum):
+    A = auto()
+    B = "s"
+    START = auto()
+    SELECT = auto()
+    LEFT = auto()
+    RIGHT = auto()
+    UP = auto()
+    DOWN = auto()
 
 
 class PyBoyRunner:
@@ -30,3 +43,28 @@ class PyBoyRunner:
         while self._pyboy_instance.tick():
             pass
         self._pyboy_instance.stop()
+
+    # Input-related methods
+
+    def press(self, key: Inp | str):
+        """Press a key."""
+        self._pyboy_instance.button(key)
+        self._pyboy_instance.tick()
+        self._pyboy_instance.tick()
+
+    def press_sequence(self, keys: Iterable[Inp | str]):
+        """Press a sequence of keys."""
+        for key in keys:
+            self.press(key)
+
+    def battle_attack(self, num):
+        """Attack during a turn"""
+        self.press(Inp.A)
+        self.press_sequence([Inp.DOWN] * (num - 1))
+        self.press(Inp.A)
+
+    def battle_switch(self, num):
+        """Switch pokemon during a turn"""
+        self.press_sequence([Inp.RIGHT, Inp.A])
+        self.press_sequence([Inp.DOWN] * (num - 1))
+        self.press(Inp.A)
