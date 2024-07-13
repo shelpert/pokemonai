@@ -23,7 +23,11 @@ class Move(IntEnum):
 class Pokemon(IntEnum):
     """Index of pokemon species."""
 
+    # NOTE: This is not pokedex entry number, but the ID from this list:
+    # https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_index_number_(Generation_I)
     NONE = 0  # No pokemon in this slot
-    BULBASAUR = 153
     ONIX = 34
+    BULBASAUR = 153
     GEODUDE = 169
+    CHARMANDER = 176
+    SQUIRTLE = 177
