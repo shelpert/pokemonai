@@ -1,5 +1,5 @@
 from typing import Iterable
-from memory_wrapper import MemoryViewWrapper
+from memory_values import BattleStatus, PokemonMemory
 from enum import StrEnum, auto
 from pyboy import PyBoy
 
@@ -36,7 +36,9 @@ class PyBoyAgent:
                 self._pyboy_instance.load_state(f)
 
         self._pyboy_instance.memory[0xD355] = options_byte
-        self.memory = MemoryViewWrapper(self._pyboy_instance.memory)
+
+        # Allow direct access to memory if needed
+        self.memory = self._pyboy_instance.memory
 
     def run(self):
         """Run PyBoy as normal."""
@@ -44,13 +46,31 @@ class PyBoyAgent:
             pass
         self._pyboy_instance.stop()
 
+    # Memory getters
+    # NOTE: Accessed values will not update live with the game.
+
+    @property
+    def player_status(self):
+        return BattleStatus.from_memory(self.memory[0xD062:0xD065])
+
+    @property
+    def enemy_status(self):
+        return BattleStatus.from_memory(self.memory[0xD067:0xD06A])
+
+    @property
+    def player_pokemon(self):
+        return PokemonMemory.party_from_memory(self.memory[0xD16B : 0xD16B + 44 * 6])
+
+    @property
+    def enemy_pokemon(self):
+        return PokemonMemory.party_from_memory(self.memory[0xD8A4 : 0xD8A4 + 44 * 6])
+
     # Input-related methods
 
     def press(self, key: Inp | str):
         """Press a key."""
         self._pyboy_instance.button(key)
-        self._pyboy_instance.tick()
-        self._pyboy_instance.tick()
+        self._pyboy_instance.tick(2)
 
     def press_sequence(self, keys: Iterable[Inp | str]):
         """Press a sequence of keys."""
