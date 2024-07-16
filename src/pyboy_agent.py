@@ -65,6 +65,10 @@ class PyBoyAgent:
     def enemy_pokemon(self):
         return PokemonMemory.party_from_memory(self.memory[0xD8A4 : 0xD8A4 + 44 * 6])
 
+    @property
+    def menu_position(self):
+        return self.memory[0xCC25], self.memory[0xCC26]
+
     # Input-related methods
 
     def press(self, key: Inp | str):
@@ -79,12 +83,21 @@ class PyBoyAgent:
 
     def battle_attack(self, num):
         """Attack during a turn"""
+        #TODO account for menu item storage
+        if (self.menu_position[0] != 9 and self.menu_position[1] != 0):
+            pass
         self.press(Inp.A)
-        self.press_sequence([Inp.DOWN] * (num - 1))
+        while (self.menu_position[1] != num):
+            self.press(Inp.DOWN)
         self.press(Inp.A)
 
     def battle_switch(self, num):
         """Switch pokemon during a turn"""
+        #TODO account for menu item storage
         self.press_sequence([Inp.RIGHT, Inp.A])
         self.press_sequence([Inp.DOWN] * (num - 1))
         self.press(Inp.A)
+
+    def wait_for_turn(self):
+        while (self.menu_position[0] == 5):
+            pass
