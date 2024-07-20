@@ -32,8 +32,7 @@ class PyBoyAgent:
         self._pyboy_instance = PyBoy(rom_path, sound=False)
         self._pyboy_instance.set_emulation_speed(emulation_speed)
         if state_path is not None:
-            with open(state_path, "rb") as f:
-                self._pyboy_instance.load_state(f)
+            self.load_state(state_path)
 
         self._pyboy_instance.memory[0xD355] = options_byte
 
@@ -45,6 +44,14 @@ class PyBoyAgent:
         while self._pyboy_instance.tick():
             pass
         self._pyboy_instance.stop()
+    
+    def stop(self):
+        self._pyboy_instance.stop()
+    
+    def load_state(self, path):
+        with open(path, "rb") as f:
+            self._pyboy_instance.load_state(f)
+        self._pyboy_instance.tick(50)
 
     # Memory getters
     # NOTE: Accessed values will not update live with the game.
