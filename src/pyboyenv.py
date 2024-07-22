@@ -1,8 +1,8 @@
 import gymnasium as gym
 import numpy as np
-from pyboy_agent import PyBoyAgent
+from src.pyboy_agent import PyBoyAgent
 import random
-from memory_values import BattleStatus
+from src.memory_values import BattleStatus
 
 from gymnasium import spaces
 
@@ -11,11 +11,14 @@ STATE_PATH = "battle_start.state"
 
 
 class PyBoyEnv(gym.Env):
-    metadata = {"render_modes": [], render_fps: 4}
+    metadata = {"render_modes": [], "render_fps": 4}
     reward_range = (-1, 1)
 
     def __init__(self, mode=None):
-        self._agent = PyBoyAgent(emulation_speed=0)
+        self._agent = PyBoyAgent(
+            state_path=STATE_PATH,
+            emulation_speed=1,
+        )
 
         self.observation_space = spaces.Dict({
             "PlayerHP": spaces.Discrete(50),
@@ -24,10 +27,8 @@ class PyBoyEnv(gym.Env):
             "Seeded": spaces.Discrete(2),
             "EffectiveGrowls": spaces.Discrete(7),
         })
-        self.action_space = spaces.Dicrete(3)
+        self.action_space = spaces.Discrete(3)
 
-        self.reset(seed=random.randrange(42))
-    
     def _get_obs(self):
         a = self._agent
         return {

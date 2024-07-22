@@ -1,5 +1,5 @@
 from typing import Iterable
-from memory_values import BattleStatus, PokemonMemory
+from src.memory_values import BattleStatus, PokemonMemory
 from enum import StrEnum, auto
 from pyboy import PyBoy
 
@@ -52,6 +52,9 @@ class PyBoyAgent:
         with open(path, "rb") as f:
             self._pyboy_instance.load_state(f)
         self._pyboy_instance.tick(50)
+    
+    def tick(self, ticks=1):
+        self._pyboy_instance.tick(ticks)
 
     # Memory getters
     # NOTE: Accessed values will not update live with the game.

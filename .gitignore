@@ -4,3 +4,4 @@ state_file_*.state
 __pycache__/
 .DS_Store
 .venv/
+.idea/
