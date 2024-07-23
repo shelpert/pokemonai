@@ -1,5 +1,5 @@
 from typing import Iterable
-from src.memory_values import BattleStatus, PokemonMemory
+from src.environment.memory_values import BattleStatus, PokemonMemory
 from enum import StrEnum, auto
 from pyboy import PyBoy
 

@@ -1,4 +1,4 @@
-from src.pyboyenv import PyBoyEnv
+from src.environment.pyboyenv import PyBoyEnv
 from src.rl_models import BasicRL
 
 

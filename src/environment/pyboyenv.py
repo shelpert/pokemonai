@@ -1,8 +1,8 @@
 import gymnasium as gym
 import numpy as np
-from src.pyboy_agent import PyBoyAgent
+from src.environment.pyboy_agent import PyBoyAgent
 import random
-from src.memory_values import BattleStatus
+from src.environment.memory_values import BattleStatus
 
 from gymnasium import spaces
 

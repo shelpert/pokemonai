@@ -1,4 +1,4 @@
-from src.pyboyenv import PyBoyEnv
+from src.environment import PyBoyEnv
 from collections import defaultdict
 
 

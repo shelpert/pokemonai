@@ -1,6 +1,6 @@
 from enum import IntFlag
 from typing import NamedTuple
-from src.constants import pokedex as P
+from src.environment import pokedex as P
 from dataclasses import dataclass
 from itertools import batched
 import struct
