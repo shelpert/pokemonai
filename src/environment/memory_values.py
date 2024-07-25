@@ -95,6 +95,5 @@ class BattleStatus(IntFlag):
 
     @classmethod
     def from_memory(cls, bytes_: list[int]):
-        print(bytes_)
         val = int.from_bytes(bytes_, "little")
         return cls(val)

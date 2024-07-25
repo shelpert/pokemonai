@@ -5,4 +5,5 @@ from src.rl_models import BasicRL
 env = PyBoyEnv()
 model = BasicRL(env)
 
-model.run_training_round()
+for _ in range(10):
+    model.run_training_session()

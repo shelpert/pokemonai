@@ -73,7 +73,12 @@ class PyBoyAgent:
 
     @property
     def enemy_pokemon(self):
+        # TODO: account for lack of EV / trainer ID
         return PokemonMemory.party_from_memory(self.memory[0xD8A4 : 0xD8A4 + 44 * 6])
+    
+    @property
+    def current_enemy_pokemon(self):
+        return PokemonMemory.from_memory(self.memory[0xCFE5 : 0xCFE5 + 44])
 
     @property
     def menu_position(self):
@@ -84,7 +89,7 @@ class PyBoyAgent:
     def press(self, key: Inp | str):
         """Press a key."""
         self._pyboy_instance.button(key)
-        self._pyboy_instance.tick(2)
+        self._pyboy_instance.tick(5)
 
     def press_sequence(self, keys: Iterable[Inp | str]):
         """Press a sequence of keys."""
@@ -94,13 +99,14 @@ class PyBoyAgent:
     def battle_attack(self, num):
         """Attack during a turn"""
         #TODO account for menu item storage
-        if (self.menu_position[0] != 9 and self.menu_position[1] != 0):
-            pass
+        if self.menu_position[0] != 9 or self.menu_position[1] != 0:
+            raise ValueError("Cannot attack because not in attack menu")
         self.press(Inp.A)
-        while (self.menu_position[1] != num):
+        while self.menu_position[1] != (num + 1):
             self.press(Inp.DOWN)
+        
         self.press(Inp.A)
-
+        
     def battle_switch(self, num):
         """Switch pokemon during a turn"""
         #TODO account for menu item storage
@@ -109,5 +115,9 @@ class PyBoyAgent:
         self.press(Inp.A)
 
     def wait_for_turn(self):
-        while (self.menu_position[0] == 5):
-            pass
+        while self.menu_position[0] == 5:
+            if self.player_pokemon[0].hp == 0:
+                return False
+            self.press(Inp.A)
+            self.tick(50)
+        return True

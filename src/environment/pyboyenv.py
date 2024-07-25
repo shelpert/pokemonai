@@ -17,7 +17,7 @@ class PyBoyEnv(gym.Env):
     def __init__(self, mode=None):
         self._agent = PyBoyAgent(
             state_path=STATE_PATH,
-            emulation_speed=1,
+            emulation_speed=0,
         )
 
         self.observation_space = spaces.Dict({
@@ -31,6 +31,8 @@ class PyBoyEnv(gym.Env):
 
     def _get_obs(self):
         a = self._agent
+        print(a.enemy_pokemon)
+        print(a.current_enemy_pokemon)
         return {
             "PlayerHP": a.player_pokemon[0].hp,
             "GeodudeHP": a.enemy_pokemon[0].hp,
@@ -47,15 +49,14 @@ class PyBoyEnv(gym.Env):
 
     def step(self, action):
         self._agent.battle_attack(action)
-        self._agent.wait_for_turn()
+        continue_ = self._agent.wait_for_turn()
 
         obs = self._get_obs()
-        terminated = obs["PlayerHP"] == 0 or obs["OnixHP"] == 0
-        reward = 1 if obs["OnixHP"] == 0 else -1 if obs["PlayerHP"] == 0 else 0
-        observation = self._get_obs()
+        terminated = obs["PlayerHP"] == 0 or obs["OnixHP"] == 0 or not continue_
+        reward = 1 if obs["OnixHP"] == 0 else 0
         info = {}
         
-        return observation, reward, terminated, False, info
+        return obs, reward, terminated, False, info
 
     def render(self):
         pass  # TODO
