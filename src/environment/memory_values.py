@@ -38,6 +38,7 @@ class PokemonMemory:
     level: int
     hp: int
     moves: tuple[P.Move, P.Move, P.Move, P.Move]
+    pp: tuple[int, int, int, int]
     types: tuple[int, int]
     stats: StatItems[int]
     ev: StatItems[int]
@@ -49,18 +50,38 @@ class PokemonMemory:
         return cls(
             species=P.Pokemon(x[0]),
             hp=x[1],
-            # status=x[3],
+            # status=x[2],
             types=x[3:5],
             moves=tuple(P.Move(m) for m in x[5:9]),  # type: ignore
             ev=StatItems(*x[9:14]),
             iv=parse_ivs(x[14]),
+            pp=x[15:19],
             level=x[19],
             stats=StatItems(*x[20:25]),
+        )
+    
+    @classmethod
+    def from_battle_enemy(cls, data: list[int]):
+        x = struct.unpack(">BHxB2Bx4BHB5H4B", bytes(data))
+        return cls(
+            species=P.Pokemon(x[0]),
+            hp=x[1],
+            # status=x[2],
+            types=x[3:5],
+            moves=tuple(P.Move(m) for m in x[5:9]),  # type: ignore
+            iv=parse_ivs(x[9]),
+            level=x[10],
+            stats=StatItems(*x[11:16]),
+            pp=x[16:20],
+            ev=StatItems(0, 0, 0, 0, 0),
         )
 
     @classmethod
     def party_from_memory(cls, data: list[int]):
         return [cls.from_memory(list(i)) for i in batched(data, 44)]
+    
+    def __eq__(self, other):
+        return (self.species, self.iv) == (other.species, other.iv)
 
     def __repr__(self) -> str:
         return f"{self.species.name.capitalize()}[Lv{self.level}; {self.hp}/{self.stats.hp}HP]"  # type: ignore

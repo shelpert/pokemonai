@@ -73,12 +73,14 @@ class PyBoyAgent:
 
     @property
     def enemy_pokemon(self):
-        # TODO: account for lack of EV / trainer ID
-        return PokemonMemory.party_from_memory(self.memory[0xD8A4 : 0xD8A4 + 44 * 6])
-    
-    @property
-    def current_enemy_pokemon(self):
-        return PokemonMemory.from_memory(self.memory[0xCFE5 : 0xCFE5 + 44])
+        # The party section isn't refreshed so we take info from the battle section
+        battle = PokemonMemory.from_battle_enemy(self.memory[0xCFE5 : 0xCFE5 + 29])
+        party = PokemonMemory.party_from_memory(self.memory[0xD8A4 : 0xD8A4 + 44 * 6])
+        for i, p in enumerate(party):
+            if p == battle:
+                party[i] = battle
+                break
+        return party
 
     @property
     def menu_position(self):
