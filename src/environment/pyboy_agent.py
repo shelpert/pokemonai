@@ -30,6 +30,7 @@ class PyBoyAgent:
         rom_path: str = "Pokemon - Red Version (USA, Europe).gb",
     ) -> None:
         self._pyboy_instance = PyBoy(rom_path, sound=False)
+        print("SPEED", emulation_speed)
         self._pyboy_instance.set_emulation_speed(emulation_speed)
         if state_path is not None:
             self.load_state(state_path)
@@ -44,15 +45,15 @@ class PyBoyAgent:
         while self._pyboy_instance.tick():
             pass
         self._pyboy_instance.stop()
-    
+
     def stop(self):
         self._pyboy_instance.stop()
-    
+
     def load_state(self, path):
         with open(path, "rb") as f:
             self._pyboy_instance.load_state(f)
         self._pyboy_instance.tick(50)
-    
+
     def tick(self, ticks=1):
         self._pyboy_instance.tick(ticks)
 
@@ -100,18 +101,18 @@ class PyBoyAgent:
 
     def battle_attack(self, num):
         """Attack during a turn"""
-        #TODO account for menu item storage
+        # TODO account for menu item storage
         if self.menu_position[0] != 9 or self.menu_position[1] != 0:
             raise ValueError("Cannot attack because not in attack menu")
         self.press(Inp.A)
         while self.menu_position[1] != (num + 1):
             self.press(Inp.DOWN)
-        
+
         self.press(Inp.A)
-        
+
     def battle_switch(self, num):
         """Switch pokemon during a turn"""
-        #TODO account for menu item storage
+        # TODO account for menu item storage
         self.press_sequence([Inp.RIGHT, Inp.A])
         self.press_sequence([Inp.DOWN] * (num - 1))
         self.press(Inp.A)
@@ -119,6 +120,8 @@ class PyBoyAgent:
     def wait_for_turn(self):
         while self.menu_position[0] == 5:
             if self.player_pokemon[0].hp == 0:
+                return False
+            elif self.enemy_pokemon[1].hp == 0:
                 return False
             self.press(Inp.A)
             self.tick(50)

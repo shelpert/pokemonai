@@ -21,13 +21,15 @@ class PyBoyEnv(gym.Env):
             emulation_speed=0,
         )
 
-        self.observation_space = spaces.Dict({
-            "PlayerHP": spaces.Discrete(50),
-            "GeodudeHP": spaces.Discrete(50),
-            "OnixHP": spaces.Discrete(50),
-            "Seeded": spaces.Discrete(2),
-            "EffectiveGrowls": spaces.Discrete(7),
-        })
+        self.observation_space = spaces.Dict(
+            {
+                "PlayerHP": spaces.Discrete(50),
+                "GeodudeHP": spaces.Discrete(50),
+                "OnixHP": spaces.Discrete(50),
+                "Seeded": spaces.Discrete(2),
+                "EffectiveGrowls": spaces.Discrete(7),
+            }
+        )
         self.action_space = spaces.Discrete(3)
 
     def _get_obs(self):
@@ -44,8 +46,8 @@ class PyBoyEnv(gym.Env):
         a = self._agent
         return {
             **self._get_obs(),
-            "EnemyLastMove": pokedex.Move(a.memory[0xCCDC]),
-            "PlayerLastMove": pokedex.Move(a.memory[0xCCDD]),
+            "EnemyLastMove": pokedex.Move(a.memory[0xCCDC]).name,
+            "PlayerLastMove": pokedex.Move(a.memory[0xCCDD]).name,
             "PP": a.player_pokemon[0].pp,
         }
 
@@ -57,13 +59,13 @@ class PyBoyEnv(gym.Env):
 
     def step(self, action):
         self._agent.battle_attack(action)
-        continue_ = self._agent.wait_for_turn()
+        terminated = not self._agent.wait_for_turn()
 
         obs = self._get_obs()
-        terminated = obs["PlayerHP"] == 0 or obs["OnixHP"] == 0 or not continue_
-        reward = 1 if obs["OnixHP"] == 0 else 0
         info = self._get_info()
-        
+        terminated |= obs["PlayerHP"] == 0 or obs["OnixHP"] == 0
+        reward = 1 if obs["OnixHP"] == 0 else 0
+
         return obs, reward, terminated, False, info
 
     def render(self):

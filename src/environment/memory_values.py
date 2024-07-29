@@ -59,7 +59,7 @@ class PokemonMemory:
             level=x[19],
             stats=StatItems(*x[20:25]),
         )
-    
+
     @classmethod
     def from_battle_enemy(cls, data: list[int]):
         x = struct.unpack(">BHxB2Bx4BHB5H4B", bytes(data))
@@ -79,7 +79,7 @@ class PokemonMemory:
     @classmethod
     def party_from_memory(cls, data: list[int]):
         return [cls.from_memory(list(i)) for i in batched(data, 44)]
-    
+
     def __eq__(self, other):
         return (self.species, self.iv) == (other.species, other.iv)
 

@@ -12,8 +12,8 @@ class RL(ABC):
         obs, info = self.env.reset()
         info |= self.get_info(obs)
 
-        f = open(data_fp, "a")
-        self.writer = csv.DictWriter(f, fieldnames=info.keys())
+        self.f = open(data_fp, "a")
+        self.writer = csv.DictWriter(self.f, fieldnames=info.keys())
         self.writer.writeheader()
 
     @abstractmethod
@@ -26,7 +26,7 @@ class RL(ABC):
 
     def apply_reward(self, obs, reward):
         pass
-        
+
     def apply_end_reward(self, obs, reward):
         pass
 
@@ -52,7 +52,11 @@ class RL(ABC):
         self.apply_end_reward(reward)
 
     def save_row(self, obs, info):
+        print(", ".join(f"{k!r}: {v!s}" for k,v in info.items()))
         self.writer.writerow(info | self.get_info(obs))
+    
+    def __del__(self):
+        self.f.close()
 
 
 class BasicRL(RL):
@@ -61,10 +65,11 @@ class BasicRL(RL):
         self.path = []
         self.e = 0.3
         super().__init__(env)
-    
+
     def get_info(self, obs):
         state = tuple(obs.values())
-        return {"win_prob": self.state_dict.get(state, [[0, 0, 0], [0, 0, 0]])}
+        prob = self.state_dict.get(state, np.array([[0, 0, 0], [0, 0, 0]]))
+        return {"win_prob": self.state_dict.get(state, prob.tolist())}
 
     def get_action(self, obs):
         state = tuple(obs.values())
