@@ -2,3 +2,4 @@ pyboy==2.2.0
 numpy==1.26.4
 keyboard==0.13.5
 gymnasium==0.29.1
+readerwriterlock==1.0.9
