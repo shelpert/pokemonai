@@ -24,13 +24,15 @@ class PyBoyAgent:
 
     def __init__(
         self,
+        headless: bool = False,
         emulation_speed: float = 0,
         options_byte: int = 0xC0,
         state_path: str | None = None,
         rom_path: str = "Pokemon - Red Version (USA, Europe).gb",
     ) -> None:
-        self._pyboy_instance = PyBoy(rom_path, sound=False)
-        print("SPEED", emulation_speed)
+        self._pyboy_instance = PyBoy(
+            rom_path, sound=False, window="null" if headless else "OpenGL"
+        )
         self._pyboy_instance.set_emulation_speed(emulation_speed)
         if state_path is not None:
             self.load_state(state_path)

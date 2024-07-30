@@ -19,6 +19,7 @@ class PyBoyEnv(gym.Env):
         self._agent = PyBoyAgent(
             state_path=STATE_PATH,
             emulation_speed=0,
+            headless=True,
         )
 
         self.observation_space = spaces.Dict(
@@ -39,7 +40,7 @@ class PyBoyEnv(gym.Env):
             "GeodudeHP": a.enemy_pokemon[0].hp,
             "OnixHP": a.enemy_pokemon[1].hp,
             "Seeded": BattleStatus.SEEDED in a.enemy_status,
-            "EffectiveGrowls": 0,
+            "EffectiveGrowls": 7 - a.memory[0xCD2E],
         }
 
     def _get_info(self):
