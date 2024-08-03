@@ -32,6 +32,7 @@ class PyBoyEnv(gym.Env):
             }
         )
         self.action_space = spaces.Discrete(3)
+        self.rng = np.random.default_rng()
 
     def _get_obs(self):
         a = self._agent
@@ -51,14 +52,20 @@ class PyBoyEnv(gym.Env):
             "PlayerLastMove": pokedex.Move(a.memory[0xCCDD]).name,
             "PP": a.player_pokemon[0].pp,
         }
+    
+    def wait_random(self):
+        self.tick(self.rng.integers(50))
 
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
+        # Parallel-safe PRNG
+        self.rng = np.random.Generator(np.random.PCG64DXSM(seed=seed))
         self._agent.load_state(STATE_PATH)
-        self._agent.tick(50 + (seed or 0) % 25)
+        self.wait_random()
         return self._get_obs(), self._get_info()
 
     def step(self, action):
+        self.wait_random()
         self._agent.battle_attack(action)
         terminated = not self._agent.wait_for_turn()
 
