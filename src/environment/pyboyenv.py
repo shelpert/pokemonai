@@ -54,7 +54,7 @@ class PyBoyEnv(gym.Env):
         }
     
     def wait_random(self):
-        self.tick(self.rng.integers(50))
+        self._agent.tick(self.rng.integers(50))
 
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)

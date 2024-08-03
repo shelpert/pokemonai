@@ -59,48 +59,43 @@ class RL(ABC):
         pass
 
 class BasicRL(RL):
-    def __init__(self, env: PyBoyEnv):
-        self.state_dict = {}
+    def __init__(self, env: PyBoyEnv, state_arr: np.ndarray, state_lock):
+        self.state_arr = state_arr
+        self.state_lock = state_lock
         self.path = []
         self.e = 0.3
         super().__init__(env)
-    
-    @classmethod
-    def from_state_file(cls, env, fp):
-        instance = cls(env)
-        instance.load_state(fp)
-        return instance
+
+    def arr_index(self, obs):
+        return (
+            obs["PlayerHP"],
+            obs["GeodudeHP"] + obs["OnixHP"],
+            int(obs["Seeded"]),
+            obs["EffectiveGrowls"],
+        )
 
     def get_info(self, obs):
-        state = tuple(obs.values())
-        prob = self.state_dict.get(state, np.array([[0, 0, 0], [0, 0, 0]], dtype=float))
-        return {"win_prob": prob.tolist()}
+        with self.state_lock.gen_rlock():
+            prob = self.state_arr[self.arr_index(obs)].tolist()
+        return {"win_prob": prob}
 
     def get_action(self, obs, info):
-        usable = np.bool_(info["PP"][:3])
-        state = tuple(obs.values())
-        if state not in self.state_dict:
-            self.state_dict[state] = np.array(
-                [[0.1, 0.1, 0.1], [0.2, 0.2, 0.2]], dtype=float
-            )
-            action = self.env.action_space.sample(usable.astype(np.int8))
-        elif random.random() > self.e:
-            s = self.state_dict[state]
-            action = np.argmax(s[0] / s[1] * usable)
+        usable = np.bool_(info["PP"][:3]).astype(np.int8)
+        index = self.arr_index(obs)
+        if np.random.random() < self.e:
+            return self.env.action_space.sample(usable)
         else:
-            action = self.env.action_space.sample(usable.astype(np.int8))
-        self.path.append((state, action))
+            with self.state_lock.gen_rlock():
+                s = self.state_arr[index]
+                print(index, s.shape)
+                action = np.argmax(s[0] / s[1] * usable)
+        self.path.append((index, action))
         return action
 
     def apply_end_reward(self, reward, t):
-        for s, a in self.path:
-            d = self.state_dict[s]
-            d[:, a] += max(reward - 0.01 * t, 0), 1 - 0.01 * t
-
-    def load_state(self, fp):
-        with open(fp, "rb") as f:
-            self.state_dict = pickle.load(f)
-
-    def save_state(self, fp):
-        with open(fp, "wb") as f:
-            pickle.dump(self.state_dict, f)
+        with self.state_lock.gen_wlock():
+            for s, a in self.path:
+                self.state_arr[*s, :, a] += (
+                    max(reward - 0.01 * t, 0),
+                    1 - 0.01 * t,
+                )
